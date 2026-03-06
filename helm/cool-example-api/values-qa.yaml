@@ -1,0 +1,5 @@
+replicaCount: 1
+environment: qa
+ingress:
+  enabled: true
+  host: qa-api.noterm.app
