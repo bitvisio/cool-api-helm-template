@@ -11,6 +11,7 @@ This repository provides a template for building and deploying FastAPI-based app
 .
 ├── .github 
 │   └── workflows                       # CI/CD workflows for GitHub Actions
+│       ├── run_unit_tests.yml          # Workflow for running unit tests
 │       ├── deploy_qa.yml               # Workflow for QA environment
 │       └── deploy_prod.yml             # Workflow for production environment
 ├── helm                                # Helm charts
@@ -27,10 +28,12 @@ This repository provides a template for building and deploying FastAPI-based app
 ├── src                                 # Source code
 │   ├── api                             # API routers
 │   ├── model                           # Data models
+│   ├── utils                           # Utility modules
 │   └── service                         # Business logic
 ├── test                                # Unit and integration tests
 │   ├── api                             # API tests
-│   └── service                         # Service tests
+│   ├── service                         # Service tests
+│   └── utils                           # Utility tests
 ├── main.py                             # FastAPI application entry point
 ├── Dockerfile                          # Dockerfile for building the application image
 ├── pyproject.toml                      # Project metadata and dependencies
@@ -44,8 +47,9 @@ This repository provides a template for building and deploying FastAPI-based app
 ## **Features**
 
 - **FastAPI Framework**: A web framework for building APIs with Python.
+- **Health Check Endpoint**: Built-in `/health` endpoint for Kubernetes liveness and readiness probes.
 - **Kubernetes Deployment**: Includes Helm charts for deploying the application to Kubernetes.
-- **CI/CD Pipelines**: Automated workflows for testing, building, and deploying the application to local, QA, and production environments.
+- **CI/CD Pipelines**: Automated workflows for testing, building, and deploying the application to QA and production environments.
 - **Ingress Support**: Configured for domain-based routing with environment-specific Ingress rules.
 - **Unit and Integration Tests**: Comprehensive test coverage for API endpoints and business logic.
 
@@ -173,17 +177,17 @@ Optional:
 
 ## **CI/CD Pipelines**
 
-### **Local Deployment**
-- Triggered manually via GitHub Local Actions.
-- Runs tests, builds the Docker image, and deploys to the local environment.
+### **Unit Tests**
+- Triggered on pull requests to the `test` branch.
+- Runs the full test suite to validate changes before merging.
 
 ### **QA Deployment**
 - Triggered on pushes to the `test` branch.
-- Runs tests, builds the Docker image, pushes image to GitHub Container Registry (ghcr.io) and deploys to the QA environment (`kube-apps-qa` namespace).
+- Reads the version from `pyproject.toml`, creates a Git tag, builds the Docker image, pushes it to GitHub Container Registry (ghcr.io), and deploys to the QA environment (`kube-apps-qa` namespace).
 
 ### **Production Deployment**
 - Triggered on pushes to the `main` branch.
-- Deploys to the production environment (`kube-apps` namespace).
+- Reads the version from `pyproject.toml` and deploys to the production environment (`kube-apps` namespace) using the matching image from GHCR.
 
 ---
 
@@ -193,6 +197,7 @@ Optional:
 - `replicaCount`: 1
 - `image.repository`: `cool-example-api`
 - `image.tag`: `latest`
+- `image.pullPolicy`: `IfNotPresent`
 - `environment`: `default`
 - `service.type`: `ClusterIP`, port `80` → targetPort `5000`
 - `ingress.enabled`: `false`
