@@ -34,4 +34,4 @@ jobs:
           helm upgrade --install cool-example-api ./helm/cool-example-api \
             --namespace kube-apps --create-namespace \
             -f ./helm/cool-example-api/values-prod.yaml \
-            --set image.repository=ghcr.io/${{ github.repository_owner }}/${{ vars.REPO_NAME }}
+            --set image.repository=ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
