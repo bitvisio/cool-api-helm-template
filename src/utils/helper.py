@@ -11,7 +11,7 @@ def get_base_path(name: str) -> str:
     if meipass is not None: # PyInstaller
         return os.path.join(str(meipass), name)
     else: # Dev: 
-        root = os.path.dirname(os.path.dirname(__file__))
+        root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         return os.path.join(root, name)
     
 def message_to_json(message: Message):
