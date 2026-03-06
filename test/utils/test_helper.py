@@ -1,6 +1,6 @@
 import os
 import sys
-from utils.helper import get_base_path, message_to_json
+from src.utils.helper import get_base_path, message_to_json
 from src.model.message import Message
 
 class TestGetBasePath:

@@ -4,7 +4,7 @@ import json
 from typing import List, Dict, Optional
 from src.model.message import Message
 from src.model.msg_payload import MsgPayload
-from utils.helper import get_base_path, message_to_json
+from ..utils.helper import get_base_path, message_to_json
 
 class MessageService:
     def __init__(self):
