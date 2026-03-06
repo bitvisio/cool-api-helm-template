@@ -33,7 +33,6 @@ jobs:
         id: get_version
         run: |
           VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['project']['version'])")
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create tag
@@ -43,7 +42,7 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/v${{ env.VERSION }}',
+              ref: 'refs/tags/v${{ steps.get_version.outputs.VERSION }}',
               sha: context.sha
             })
 
@@ -59,7 +58,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.VERSION }}
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.get_version.outputs.VERSION }}
   
   deploy_qa:
     runs-on: [ ubuntu-latest ]
