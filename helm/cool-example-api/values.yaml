@@ -2,6 +2,7 @@ replicaCount: 1
 image:
   repository: cool-example-api
   tag: latest
+  pullPolicy: IfNotPresent
 environment: default
 service:
   type: ClusterIP
